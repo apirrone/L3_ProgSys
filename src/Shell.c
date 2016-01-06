@@ -1,8 +1,8 @@
 /* Construction des arbres représentant des commandes */
 
-#include "include/Shell.h"
-#include "include/Affichage.h"
-#include "include/Evaluation.h"
+#include "../include/Shell.h"
+#include "../include/Affichage.h"
+#include "../include/Evaluation.h"
 
 #include <stdbool.h>
 #include <stdio.h>

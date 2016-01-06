@@ -1,5 +1,5 @@
 %{
-#include "Shell.h"
+#include "../include/Shell.h"
 extern int yylex(void);
 %}
 

@@ -1,5 +1,5 @@
-#include "include/Shell.h"
-#include "include/Affichage.h"
+#include "../include/Shell.h"
+#include "../include/Affichage.h"
 
 #include <stdio.h>
 
