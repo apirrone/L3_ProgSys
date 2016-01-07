@@ -18,8 +18,7 @@ extern int yyparse_string(char *);
 /*
  * Construit une expression à partir de sous-expressions
  */
-Expression *ConstruireNoeud (expr_t type, Expression *g, Expression *d, char **args)
-{
+Expression *ConstruireNoeud (expr_t type, Expression *g, Expression *d, char **args){
   Expression *e;
      
   if ((e = (Expression *)malloc(sizeof(Expression))) == NULL){
@@ -39,8 +38,7 @@ Expression *ConstruireNoeud (expr_t type, Expression *g, Expression *d, char **a
 /*
  * Renvoie la longueur d'une liste d'arguments
  */
-int LongueurListe(char **l)
-{
+int LongueurListe(char **l){
   char **p;
   for (p=l; *p != NULL; p++)
     ;
@@ -54,8 +52,7 @@ int LongueurListe(char **l)
  * liste pouvant contenir NB_ARGS arguments (plus le pointeur NULL de fin de
  * liste)
  */
-char **InitialiserListeArguments (void)
-{
+char **InitialiserListeArguments (void){
   char **l;
   
   l = (char **) (calloc (NB_ARGS+1, sizeof (char *)));
@@ -68,8 +65,7 @@ char **InitialiserListeArguments (void)
 /*
  * Ajoute en fin de liste le nouvel argument et renvoie la liste résultante
  */
-char **AjouterArg (char **Liste, char *Arg)
-{
+char **AjouterArg (char **Liste, char *Arg){
   char **l;
   
   l = Liste + LongueurListe (Liste);
@@ -84,16 +80,14 @@ char **AjouterArg (char **Liste, char *Arg)
 /*
  * Fonction appelée lorsque l'utilisateur tape "".
  */
-void EndOfFile (void)
-{
+void EndOfFile (void){
   exit (0);
 } /* EndOfFile */
 
 /*
  * Appelée par yyparse() sur erreur syntaxique
  */
-void yyerror (char *s)
-{
+void yyerror (char *s){
    fprintf(stderr, "%s\n", s);
 }
 
@@ -101,21 +95,20 @@ void yyerror (char *s)
 /*
  * Libération de la mémoire occupée par une expression
  */
-void
-expression_free(Expression *e)
-{
+void expression_free(Expression *e){
   if (e == NULL)
     return;
     
   expression_free(e->gauche);
   expression_free(e->droite);
 
-  if (e->arguments != NULL)
-    {
+  if (e->arguments != NULL){
+
       for (int i = 0; e->arguments[i] != NULL; i++)
-	free(e->arguments[i]);
+        free(e->arguments[i]);
+
       free(e->arguments);  
-    }
+  }
 
   free(e);
 }
@@ -127,32 +120,28 @@ expression_free(Expression *e)
  * Analyse de la ligne lue 
  */
 
-int
-my_yyparse(void)
-{
-  if (interactive_mode)
-    {
+int my_yyparse(void){
+  if (interactive_mode){
       char *line = NULL;
       char buffer[1024];
       snprintf(buffer, 1024, "mini_shell(%d):", status);
       line = readline(buffer);
-      if(line != NULL)
-	{
-	  int ret;
-	  add_history(line);              // Enregistre la line non vide dans l'historique courant
-	  *strchr(line, '\0') = '\n';      // Ajoute \n à la line pour qu'elle puisse etre traité par le parseur
-	  ret = yyparse_string(line);     // Remplace l'entrée standard de yyparse par s
-	  free(line);
-	  return ret;
-	}
-      else
-	{
-	  EndOfFile();
-	  return -1;
-	}
-    }
-  else
-    {
+
+      if(line != NULL){
+    	  int ret;
+    	  add_history(line);              // Enregistre la line non vide dans l'historique courant
+    	  *strchr(line, '\0') = '\n';      // Ajoute \n à la line pour qu'elle puisse etre traité par le parseur
+    	  ret = yyparse_string(line);     // Remplace l'entrée standard de yyparse par s
+    	  free(line);
+    	  return ret;
+    	}
+      else{
+    	  EndOfFile();
+    	  return -1;
+    	}
+
+  }
+  else{
       // pour le mode distant par exemple
       
       int ret; int c;
@@ -162,14 +151,13 @@ my_yyparse(void)
       ssize_t linelen;
       linelen = getline(&line, &linecap, stdin);
 
-      if(linelen>0)
-	{
-	  int ret;
-	  ret = yyparse_string(line);  
-	  free(line);
-	  return ret;
-	}    
-    }
+      if(linelen>0){
+    	  int ret;
+    	  ret = yyparse_string(line);  
+    	  free(line);
+    	  return ret;
+    	}    
+  }
 }
 
 
@@ -214,20 +202,16 @@ my_yyparse(void)
       `--------------------------------------------------------------------------------------*/
 
 
-int
-main (int argc, char **argv) 
-{
+int main (int argc, char **argv) {
 
   // faire en sorte qu'interactive_mode = 0 lorsque le shell est distant 
   
-  if (interactive_mode)
-    {
-      using_history();
-    }
-  else
-    {
-      //  mode distant 
-    }
+  if (interactive_mode){
+    using_history();
+  }
+  else{
+    //  mode distant 
+  }
   
   while (1){
     if (my_yyparse () == 0) {  /* L'analyse a abouti */   
