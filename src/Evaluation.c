@@ -7,6 +7,8 @@
 #include <stdlib.h>	
 #include <unistd.h>
 #include <fcntl.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 
 void verifier(int cond, char *s){
   if (!cond){
@@ -17,7 +19,17 @@ void verifier(int cond, char *s){
 
 
 void cmd(char **arguments){
-	execvp(arguments[0], arguments);
+	if(strcmp(arguments[0], "history") == 0){
+		HIST_ENTRY **hist_list;
+
+		hist_list = history_list ();
+      	if (hist_list)
+        	for (int i = 0; hist_list[i]; i++)
+        		printf ("%d: %s\n", i + history_base, hist_list[i]->line);
+	}
+	else{
+		execvp(arguments[0], arguments);
+	}
 	perror("exec");
 	exit(1);
 }
