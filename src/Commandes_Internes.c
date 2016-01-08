@@ -64,7 +64,9 @@ int evaluer_expr_interne(char** arguments){
 
 	}	
 	else if(strcmp(arguments[0], "pwd") == 0){//PWD
-
+		char cwd[1024];
+		getcwd(cwd, sizeof(cwd));
+		printf("%s\n", cwd);
 
 	}	
 	else if(strcmp(arguments[0], "hostname") == 0){//HOSTNAME

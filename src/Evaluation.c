@@ -18,11 +18,11 @@ void cmd(char **arguments){
 		evaluer_expr_interne(arguments);
 	}
 	else{//A FAIRE
-
+		// 	execvp(arguments[0], arguments);
+		// 	perror("exec");
 	}
 	// else{
-	// 	execvp(arguments[0], arguments);
-	// 	perror("exec");	
+	
 	// }
 	exit(1);
 }
