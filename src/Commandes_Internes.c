@@ -2,7 +2,8 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <time.h>
-
+#include <stdio.h>
+#include <stdlib.h>
 
 const int SIZE_LIST_COMMANDES_INTERNES = 8;
 const char * const LIST_COMMANDES_INTERNES[] = { "echo",
@@ -66,7 +67,9 @@ int evaluer_expr_interne(char** arguments){
 
 	}	
 	else if(strcmp(arguments[0], "hostname") == 0){//HOSTNAME
-
+		char hostname[1024];
+		gethostname(hostname, 1024);
+		printf("%s\n", hostname) ;
 
 	}	
 	else if(strcmp(arguments[0], "kill") == 0){//KILL
