@@ -21,12 +21,14 @@ void verifier(int cond, char *s){
 void cmd(char **arguments){
 	if(strcmp(arguments[0], "history") == 0){
 		HIST_ENTRY **hist_list;
+		history();
+	}
 
-		hist_list = history_list ();
+		/*	hist_list = history_list ();
       	if (hist_list)
         	for (int i = 0; hist_list[i]; i++)
         		printf ("%d: %s\n", i + history_base, hist_list[i]->line);
-	}
+			}*/
 	else{
 		execvp(arguments[0], arguments);
 	}
