@@ -4,6 +4,7 @@
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <signal.h>
 
 const int SIZE_LIST_COMMANDES_INTERNES = 8;
 const char * const LIST_COMMANDES_INTERNES[] = { "echo",
@@ -73,6 +74,10 @@ int evaluer_expr_interne(char** arguments){
 
 	}	
 	else if(strcmp(arguments[0], "kill") == 0){//KILL
+		if(!kill(atoi(arguments[1]), SIGKILL))
+			printf("PID %d terminé\n", atoi(arguments[1]));
+		else
+			printf("PID %d non existant\n", atoi(arguments[1]));
 
 
 	}	
