@@ -60,7 +60,16 @@ int evaluer_expr_interne(char** arguments){
 
 	}	
 	else if(strcmp(arguments[0], "cd") == 0){//CD
-
+		char cwd[1024];
+		getcwd(cwd, sizeof(cwd));
+		printf("%s\n", cwd);
+		if(strcmp(arguments[1], ".") == 0){
+			char** newCwd;
+	//		newCwd = strsplit(cwd, "/");
+			for(int i=0; i<4; i++){
+	//			printf("%s ", newCwd[i]);			
+			}
+		}
 
 	}	
 	else if(strcmp(arguments[0], "pwd") == 0){//PWD
