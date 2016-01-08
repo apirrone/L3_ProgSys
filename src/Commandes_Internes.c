@@ -40,7 +40,12 @@ int evaluer_expr_interne(char** arguments){
 
 	}
 	else if(strcmp(arguments[0], "echo") == 0){//ECHO
-
+		int longueurListe  =LongueurListe(arguments);
+		for(int i = 1 ; i < longueurListe ; i++)
+			if(i == (longueurListe -1))
+				printf("%s\n", arguments[i]);
+			else
+				printf("%s ", arguments[i]);
 
 	}	
 	else if(strcmp(arguments[0], "date") == 0){//DATE
