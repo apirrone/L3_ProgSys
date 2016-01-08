@@ -1,6 +1,7 @@
 #include "../include/Commandes_Internes.h"
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <time.h>
 
 
 const int SIZE_LIST_COMMANDES_INTERNES = 8;
@@ -40,6 +41,7 @@ int evaluer_expr_interne(char** arguments){
 
 	}
 	else if(strcmp(arguments[0], "echo") == 0){//ECHO
+
 		int longueurListe  =LongueurListe(arguments);
 		for(int i = 1 ; i < longueurListe ; i++)
 			if(i == (longueurListe -1))
@@ -47,9 +49,12 @@ int evaluer_expr_interne(char** arguments){
 			else
 				printf("%s ", arguments[i]);
 
+
 	}	
 	else if(strcmp(arguments[0], "date") == 0){//DATE
-
+		time_t	currentTime = time(NULL);
+		char* sCurrentTime = ctime(&currentTime);
+		printf("%s\n", sCurrentTime);
 
 	}	
 	else if(strcmp(arguments[0], "cd") == 0){//CD
