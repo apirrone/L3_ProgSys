@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 const int SIZE_LIST_COMMANDES_INTERNES = 8;
 const char * const LIST_COMMANDES_INTERNES[] = { "echo",
@@ -93,7 +95,8 @@ int evaluer_expr_interne(char** arguments){
 
 	}	
 	else if(strcmp(arguments[0], "exit") == 0){//EXIT
-
+	  printf("notre PID est %d\n", getppid());
+	  kill(getppid(), SIGKILL);
 
 	}
 }
