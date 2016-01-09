@@ -12,19 +12,22 @@
 
 
 
-void cmd(char **arguments){
+int cmd(char **arguments){
 
 	if(isInterne(arguments[0])){//COMMANDE INTERNE
 		evaluer_expr_interne(arguments);
 	}
 	else{//A FAIRE
-		// 	execvp(arguments[0], arguments);
-		// 	perror("exec");
+		if(fork() == 0){//FILS
+			execvp(arguments[0], arguments);
+		 	perror("exec");
+		 	return 0;
+		}
+		else{
+			wait(NULL);
+		}
 	}
-	// else{
-	
-	// }
-	exit(1);
+	return 1;
 }
 
 
@@ -33,16 +36,37 @@ int evaluer_expr(Expression *e){
 	switch(e->type){
 		
 		case SIMPLE:
-			if(fork() == 0)//FILS
-				cmd(e->arguments);
-			else
-				wait(NULL);
+			if(cmd(e->arguments) == 0)
+				return 0;
 			break;
 
 
 		case PIPE:
 
 			break;
+			
+		case SEQUENCE:
+			evaluer_expr(e->gauche);
+			evaluer_expr(e->droite);
+			break;
+			
+		case SEQUENCE_OU:
+			if(evaluer_expr(e->gauche) != 1)
+				evaluer_expr(e->droite);
+			break;
+			
+		case SEQUENCE_ET:
+			if(evaluer_expr(e->gauche) == 1)
+				evaluer_expr(e->droite);
+			break;
+			
+		case SOUS_SHELL:
+			if(fork() == 0)//FILS
+				evaluer_expr(e->gauche);
+			else
+				wait(NULL);
+			break;
+			
 		case REDIRECTION_O:
 			if(fork() == 0){
 				int fd = open(e->arguments[0], O_CREAT | O_WRONLY, 0644);
