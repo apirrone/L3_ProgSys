@@ -62,17 +62,10 @@ int evaluer_expr_interne(char** arguments){
 
 	}	
 	else if(strcmp(arguments[0], "cd") == 0){//CD
+		chdir(arguments[1]);
 		char cwd[1024];
 		getcwd(cwd, sizeof(cwd));
-		printf("%s\n", cwd);
-		if(strcmp(arguments[1], ".") == 0){
-			char** newCwd;
-	//		newCwd = strsplit(cwd, "/");
-			for(int i=0; i<4; i++){
-	//			printf("%s ", newCwd[i]);			
-			}
-		}
-
+		printf("Current root : %s\n", cwd);
 	}	
 	else if(strcmp(arguments[0], "pwd") == 0){//PWD
 		char cwd[1024];
