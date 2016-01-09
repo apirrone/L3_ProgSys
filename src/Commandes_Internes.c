@@ -24,7 +24,7 @@ const char * const LIST_COMMANDES_INTERNES[] = { "echo",
 bool isInterne(char* cmd){//renvoie true si la commande est interne, faux sinon
 	bool ret = false;
 	for(int i = 0 ; i < SIZE_LIST_COMMANDES_INTERNES ; i++)
-		if(strcmp(cmd, LIST_COMMANDES_INTERNES[i])){
+		if(strcmp(cmd, LIST_COMMANDES_INTERNES[i]) == 0){
 			ret = true; 
 			break;
 		}
