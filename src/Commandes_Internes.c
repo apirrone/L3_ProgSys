@@ -28,6 +28,7 @@ bool isInterne(char* cmd){//renvoie true si la commande est interne, faux sinon
 			ret = true; 
 			break;
 		}
+	return ret;
 }
 
 
