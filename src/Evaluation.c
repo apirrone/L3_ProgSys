@@ -83,10 +83,47 @@ int evaluer_expr(Expression *e){
 			break;
 			
 		case SOUS_SHELL:
-			if(fork() == 0)//FILS
-				evaluer_expr(e->gauche);
-			else
+			pipe(pipefd);
+			if(fork() == 0){//FILS
+				int pipeFils [2];
+				pipe(pipeFils);
+				pid_t pid = fork();
+				if(pid == 0){//PETIT FILS
+					// en ecriture avec le PERE
+					close(pipefd[0]);
+					dup2(pipefd[1], 1);
+					close(pipefd[1]);
+					// en lecture avec le FILS
+					close(pipeFils[1]);
+					dup2(pipeFils[0], 0);
+					close(pipeFils[0]);
+					execlp("Shell", "Shell", NULL);
+					perror("exec");
+				}
+				else{//FILS
+					// se tait face au PERE
+					close(pipefd[0]);
+					close(pipefd[1]);
+					// en ecriture avec le PETIT FILS
+					close(pipeFils[0]);
+					dup2(pipeFils[1], 1);
+					close(pipeFils[1]);
+					// lance la commande, pour l'instant on réalise les tests avec "ls -l"
+					printf("ls -l ; kill %d\n", pid);
+					wait(NULL);
+				}
+			}
+			else{//PERE
+				// en ecriture avec le PETIT FILS
+				close(pipefd[1]);
+				dup2(pipefd[0], 0);
+				close(pipefd[0]);
+				char buffer [1024];
+				int nbRead = 0;
+				while ((nbRead = read(0, buffer, 1024))> 0)
+					write(1, buffer, nbRead);
 				wait(NULL);
+			}
 			break;
 			
 		case REDIRECTION_O:
