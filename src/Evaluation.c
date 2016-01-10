@@ -101,11 +101,11 @@ int evaluer_expr(Expression *e){
 			break;
 
 		case BG:
-			if(fork == 0 )
-				cmd(e->gauche->arguments);
-			else
-				wait(NULL);
-			break;
+		  if(fork() == 0 ){
+		    cmd(e->gauche->arguments);
+		    return 0;
+		  }
+		  break;
 	}
 
 	int status;

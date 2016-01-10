@@ -1,6 +1,7 @@
 #include "../include/Commandes_Internes.h"
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <sys/wait.h>
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -89,6 +90,7 @@ int evaluer_expr_interne(char** arguments){
 
 	}	
 	else if(strcmp(arguments[0], "exit") == 0){//EXIT
+	  wait(NULL);
 	  printf("notre PID est %d\n", getpid());
 	  kill(getpid(), SIGKILL);
 
