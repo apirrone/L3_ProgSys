@@ -89,8 +89,8 @@ int evaluer_expr_interne(char** arguments){
 
 	}	
 	else if(strcmp(arguments[0], "exit") == 0){//EXIT
-	  printf("notre PID est %d\n", getppid());
-	  kill(getppid(), SIGKILL);
+	  printf("notre PID est %d\n", getpid());
+	  kill(getpid(), SIGKILL);
 
 	}
 }
