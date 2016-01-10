@@ -19,14 +19,14 @@ int cmd(char **arguments){
 		evaluer_expr_interne(arguments);
 	}
 	else{//A FAIRE
-		if(fork() == 0){//FILS
-			execvp(arguments[0], arguments);
-		 	perror("exec");
-		 	return 0;
-		}
-		else{
-			wait(NULL);
-		}
+	  if(fork() == 0){//FILS
+	    execvp(arguments[0], arguments);
+	    perror("exec");
+	    return 0;
+	  }
+	  else{
+	    wait(NULL);
+	  }
 	}
 	return 1;
 }
@@ -134,6 +134,7 @@ int evaluer_expr(Expression *e){
 		case BG:
 		  if(fork() == 0 ){
 		    cmd(e->gauche->arguments);
+		    exit(0);
 		  }
 		  break;
 	}
@@ -144,5 +145,5 @@ int evaluer_expr(Expression *e){
 	while ((pid = waitpid(-1, &status, WNOHANG)) > 0)
 		printf("[%d] status = %d\n", pid, status);
 
-  return 1;
+	return 1;
 }
