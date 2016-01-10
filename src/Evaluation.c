@@ -131,38 +131,9 @@ int evaluer_expr(Expression *e){
 				wait(NULL);
 			break;
 			
-		case REDIRECTION_A:
-			if(fork() == 0){
-				int fd = open(e->arguments[0], O_CREAT | O_WRONLY | O_APPEND, 0644);
-				if(fd == -1)
-					perror("open");
-				dup2(fd, 1); 
-				close(fd);
-				evaluer_expr(e->gauche);
-				exit(1);
-			}
-			else
-				wait(NULL);
-			break;
-			
-		case REDIRECTION_I:
-			if(fork() == 0){
-				int fd = open(e->arguments[0], O_RDONLY);
-				if(fd == -1)
-					perror("open");
-				dup2(fd, 0); 
-				close(fd);
-				evaluer_expr(e->gauche);
-				exit(1);
-			}
-			else
-				wait(NULL);
-			break;
-
 		case BG:
 		  if(fork() == 0 ){
 		    cmd(e->gauche->arguments);
-		    return 0;
 		  }
 		  break;
 	}
