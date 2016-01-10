@@ -44,12 +44,13 @@ int evaluer_expr(Expression *e){
 
 		case PIPE:
 			pipe(pipefd);
+			int stdout = dup(1);
 			if(fork()==0){//FILS
 				close(pipefd[0]);
 				dup2(pipefd[1], 1);//Redirection de la sortie standard dans le pipe
 				close(pipefd[1]);
 				evaluer_expr(e->gauche);
-				perror("pipe fils\n");
+				// perror("pipe fils\n");
 
 			}
 			
@@ -58,10 +59,10 @@ int evaluer_expr(Expression *e){
 				dup2(pipefd[0], 0);//redirection du pipe dans l'entrée standard
 				close(pipefd[0]);
 				evaluer_expr(e->droite);
-				perror("pipe pere\n");				
+				// perror("pipe pere\n");				
 				wait(NULL);
-				
 			}
+			dup2(stdout, 1);
 
 
 			break;
