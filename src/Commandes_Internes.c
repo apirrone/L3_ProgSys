@@ -8,7 +8,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-const int SIZE_LIST_COMMANDES_INTERNES = 8;
+const int SIZE_LIST_COMMANDES_INTERNES = 9;
 const char * const LIST_COMMANDES_INTERNES[] = { "echo",
 												"date",
 											 	"cd",
@@ -16,10 +16,12 @@ const char * const LIST_COMMANDES_INTERNES[] = { "echo",
 											 	"history",
 											 	"hostname",
 											 	"kill",
-											 	"exit" };
+											 	"exit",
+											 	"remote" };
 
-
-
+char** listMachines;
+int nbMachines;
+int *pidsProcessus;
 
 bool isInterne(char* cmd){//renvoie true si la commande est interne, faux sinon
 	bool ret = false;
@@ -93,4 +95,95 @@ int evaluer_expr_interne(char** arguments){
 	  kill(getppid(), SIGKILL);
 
 	}
+	else if(strcmp(arguments[0], "remote") == 0){//REMOTE SHELL
+		handleRemoteShell(arguments);
+	}
+}
+
+
+void handleRemoteShell(char** arguments){
+	char* argument1 = arguments[1];
+
+	if(!strcmp(argument1, "add")){//remote add liste-de-machines
+		if(arguments[2] == NULL){
+			printf("USAGE : remote add <machine1> <machine2> ...\n");
+		}	
+		else{
+			makeListMachines(arguments);	
+			pidsProcessus = malloc(sizeof(int)*nbMachines);	
+			
+			for(int i = 0 ; i < nbMachines ; i++){
+				createMiniShell(i);
+			}
+		}
+	}
+	else if(!strcmp(argument1, "remove")){//remote remove
+		if(listMachines == NULL){
+			printf("Aucune machine\n");
+		}
+		else{
+
+		}
+	}
+	else if(!strcmp(argument1, "list")){//remote list
+		if(listMachines == NULL){
+			printf("Aucune machine\n");
+		}
+		else{
+			for(int i = 0; i < nbMachines ; i++){
+				printf("%s\n", listMachines[i]);
+			}
+		}
+	}
+	else if(!strcmp(argument1, "all")){//remote all commande-simple
+		if(arguments == NULL){
+			printf("USAGE : remote all <commande>\n");
+		}
+		else if(listMachines[0] == NULL){
+			printf("Aucune machine\n");
+		}
+		else{
+			for(int i = 0 ; i < nbMachines ; i++){
+				executeCommandOnMachine(i, arguments[2]);
+			}
+		}
+	}
+	else{//remote nom-machine commande-simple
+		char* nom_machine = arguments[1];
+		if(machineExistante(nom_machine)){
+
+		}
+		else{
+			printf("Machine non existante sur le réseau\n");
+		}
+	}
+}
+
+void makeListMachines(char** arguments){
+	nbMachines = LongueurListe(arguments)-2; //-2 car nom commande et add
+	printf("nbMachines : %d\n", nbMachines);
+	listMachines = malloc(sizeof(char*)*nbMachines);
+	for(int i = 0 ; i < nbMachines ; i++){
+		listMachines[i] = malloc(sizeof(char)*strlen(arguments[i+2]));
+	}
+	for(int i = 0 ; i < nbMachines ; i++){
+		strcpy(listMachines[i], arguments[i+2]);
+	}
+}
+
+
+//A FAIRE
+void createMiniShell(int idMachine){
+	
+}
+
+
+//A FAIRE
+bool machineExistante(char* nomMachine){
+	return false;
+}
+
+//A FAIRE
+void executeCommandOnMachine(int idMachine, char* commande){
+
 }
