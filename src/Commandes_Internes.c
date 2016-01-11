@@ -104,63 +104,76 @@ int evaluer_expr_interne(char** arguments){
 
 
 void handleRemoteShell(char** arguments){
-	char* argument1 = arguments[1];
+	if(LongueurListe(arguments)==1){
+		printf("USAGE : remote add/remove/list/all/<nomMachine>\n");
+	}
+	else{
+		char* argument1 = arguments[1];
 
-	if(!strcmp(argument1, "add")){//remote add liste-de-machines
-		if(arguments[2] == NULL){
-			printf("USAGE : remote add <machine1> <machine2> ...\n");
-		}	
-		else{
-			makeListMachines(arguments);	
-			pidsProcessus = malloc(sizeof(int)*nbMachines);	
-			
-			for(int i = 0 ; i < nbMachines ; i++){
-				createMiniShell(i);
+		if(!strcmp(argument1, "add")){//remote add liste-de-machines
+			if(arguments[2] == NULL){
+				printf("USAGE : remote add <machine1> <machine2> ...\n");
+			}	
+			else{
+				makeListMachines(arguments);	
+				pidsProcessus = malloc(sizeof(int)*nbMachines);	
+				
+				for(int i = 0 ; i < nbMachines ; i++){
+					createMiniShell(i);
+				}
 			}
 		}
-	}
-	else if(!strcmp(argument1, "remove")){//remote remove
-		if(listMachines == NULL){
-			printf("Aucune machine\n");
-		}
-		else{
-			for(int i = 0 ; i < nbMachines ; i++){
-				free(listMachines[i]);
+		else if(!strcmp(argument1, "remove")){//remote remove
+			if(listMachines == NULL){
+				printf("Aucune machine\n");
 			}
-			free(listMachines);
-			nbMachines = 0;
-		}
-	}
-	else if(!strcmp(argument1, "list")){//remote list
-		if(listMachines == NULL || nbMachines == 0){
-			printf("Aucune machine\n");
-		}
-		else{
-			for(int i = 0; i < nbMachines ; i++){
-				printf("%s\n", listMachines[i]);
+			else{
+				for(int i = 0 ; i < nbMachines ; i++){
+					free(listMachines[i]);
+				}
+				free(listMachines);
+				nbMachines = 0;
 			}
 		}
-	}
-	else if(!strcmp(argument1, "all")){//remote all commande-simple
-		if(arguments == NULL){
-			printf("USAGE : remote all <commande>\n");
-		}
-		else if(listMachines[0] == NULL){
-			printf("Aucune machine\n");
-		}
-		else{
-			for(int i = 0 ; i < nbMachines ; i++){
-				executeCommandOnMachine(i, arguments[2]);
+		else if(!strcmp(argument1, "list")){//remote list
+			if(listMachines == NULL || nbMachines == 0){
+				printf("Aucune machine\n");
+			}
+			else{
+				for(int i = 0; i < nbMachines ; i++){
+					printf("%s\n", listMachines[i]);
+				}
 			}
 		}
-	}
-	else{//remote nom-machine commande-simple
-		char* nom_machine = arguments[1];
-		if(machineExistante(nom_machine)){
+		else if(!strcmp(argument1, "all")){//remote all commande-simple
+			if(arguments == NULL){
+				printf("USAGE : remote all <commande>\n");
+			}
+			else if(listMachines[0] == NULL){
+				printf("Aucune machine\n");
+			}
+			else{
+				for(int i = 0 ; i < nbMachines ; i++){
+					executeCommandOnMachine(i, arguments[2]);
+				}
+			}
+		}
+		else if(!strcmp(argument1, "localhost")){//Faussement distant
+			if(LongueurListe(arguments) <= 2){
+				printf("USAGE : remote localhost <commande>\n");
+			}
+			else{
+				localhost(arguments[2]);
+			}
+		}
+		else{//remote nom-machine commande-simple
+			char* nom_machine = arguments[1];
+			if(machineExistante(nom_machine)){
 
-		}
-		else{
-			printf("Machine non existante sur le réseau\n");
+			}
+			else{
+				printf("Machine non existante sur le réseau\n");
+			}
 		}
 	}
 }
@@ -178,6 +191,34 @@ void makeListMachines(char** arguments){
 }
 
 
+void localhost(char* commande){
+	int pipefd1[2];
+	int pipefd2[2];
+	pipe(pipefd1);
+	pipe(pipefd2);
+
+
+	if(fork() == 0){//FILS
+		close(pipefd1[1]);
+		close(pipefd2[0]);
+		dup2(pipefd1[0], 0);//redirection sortie pipe1 dans entrée standard
+		dup2(pipefd2[1], 1);//redirection sortie standard dans entrée pipe2
+		close(pipefd1[0]);
+		close(pipefd2[1]);
+		execlp("bash", "bash", NULL);
+		perror("exec\n");
+	}
+	else{
+		close(pipefd1[0]);
+		close(pipefd2[1]);//lecture de la sortie du fils
+		dup2(pipefd2[0], 1);//Redirection pipe2 dans sortie standard
+		close(pipefd2[0]);	
+		write(pipefd1[1], &commande, sizeof(char*));
+		wait(NULL);
+
+	}
+}
+
 //A FAIRE
 void createMiniShell(int idMachine){
 	
@@ -185,7 +226,7 @@ void createMiniShell(int idMachine){
 
 
 //A FAIRE
-bool machineExistante(char* nomMachine){
+bool machineExistante(char* nomMachine){//Regarde sur le réseau si la machine existe
 	return false;
 }
 
