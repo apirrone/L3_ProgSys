@@ -97,7 +97,8 @@ int evaluer_expr(Expression *e){
 					close(pipeFils[1]);
 					dup2(pipeFils[0], 0);
 					close(pipeFils[0]);
-					execlp("Shell", "Shell", NULL);
+				//	execlp("Shell", "Shell", NULL);
+					execlp("bash", "bash", NULL);
 					perror("exec");
 				}
 				else{//FILS
@@ -108,9 +109,15 @@ int evaluer_expr(Expression *e){
 					close(pipeFils[0]);
 					dup2(pipeFils[1], 1);
 					close(pipeFils[1]);
-					// lance la commande, pour l'instant on réalise les tests avec "ls -l"
-					printf("ls -l ; kill %d\n", pid);
+					int i=0;
+					while(e->gauche->arguments[i] != NULL){
+						write(1, e->gauche->arguments[i]; sizeof(char*));
+						write(1, " "; sizeof(char*));
+						i++;
+					}
+					write(1, "; exit\n"; sizeof(char*));
 					wait(NULL);
+					exit(1);
 				}
 			}
 			else{//PERE
