@@ -111,11 +111,11 @@ int evaluer_expr(Expression *e){
 					close(pipeFils[1]);
 					int i=0;
 					while(e->gauche->arguments[i] != NULL){
-						write(1, e->gauche->arguments[i]; sizeof(char*));
-						write(1, " "; sizeof(char*));
+						write(1, e->gauche->arguments[i], sizeof(char*));
+						write(1, " ", sizeof(char*));
 						i++;
 					}
-					write(1, "; exit\n"; sizeof(char*));
+					write(1, "; exit\n", sizeof(char*));
 					wait(NULL);
 					exit(1);
 				}

@@ -21,7 +21,7 @@ const char * const LIST_COMMANDES_INTERNES[] = { "echo",
 											 	"remote" };
 
 char** listMachines;
-int nbMachines;
+int nbMachines = 0;
 int *pidsProcessus;
 
 bool isInterne(char* cmd){//renvoie true si la commande est interne, faux sinon
@@ -124,11 +124,15 @@ void handleRemoteShell(char** arguments){
 			printf("Aucune machine\n");
 		}
 		else{
-
+			for(int i = 0 ; i < nbMachines ; i++){
+				free(listMachines[i]);
+			}
+			free(listMachines);
+			nbMachines = 0;
 		}
 	}
 	else if(!strcmp(argument1, "list")){//remote list
-		if(listMachines == NULL){
+		if(listMachines == NULL || nbMachines == 0){
 			printf("Aucune machine\n");
 		}
 		else{
